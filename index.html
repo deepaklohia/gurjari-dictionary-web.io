@@ -31,7 +31,7 @@
     h1 {
       text-align: center;
       font-family: 'Roboto Slab', serif;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: normal;
       margin-bottom: 5px;
     }
@@ -60,10 +60,10 @@
       margin-left: auto;
     }
     .search-container input {
-      padding: 4px;
+      padding: 6px;
       height: 24px;
       width: 300px;
-      font-size: 14px;
+      font-size: 15px;
       border: 2px solid var(--primary);
       border-radius: 4px;
       background-color: #f0f8ff;
@@ -74,7 +74,7 @@
     }
     .toggle-mode {
       height: 24px;
-      padding: 2px 6px;
+      padding: 4px 8px;
       font-size: 12px;
       background-color: var(--primary);
       color: white;
@@ -92,7 +92,7 @@
       margin: 10px 0;
     }
     .play-icon img {
-      height: 30px;
+      height: 40px;
     }
     .dictionary-table {
       width: 100%;
@@ -105,7 +105,7 @@
       cursor: pointer;
     }
     .dictionary-table th {
-      background-color: #888;
+      background-color: var(--primary);
       color: white;
     }
     .dictionary-table tr:nth-child(even) {
@@ -131,6 +131,12 @@
     }
     .pagination button:hover {
       background-color: var(--hover);
+    }
+    .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
     }
     @media (max-width: 600px) {
       .dictionary-table, .dictionary-table thead, .dictionary-table tbody, .dictionary-table th, .dictionary-table td, .dictionary-table tr {
@@ -170,7 +176,6 @@
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search..." onkeyup="renderTable()">
       </div>
-      <button class="toggle-mode" onclick="toggleDarkMode()">🌓<span>Mode</span></button>
     </div>
   </div>
 
@@ -181,8 +186,8 @@
         <th onclick="sortTable('hindi')">🔽 HINDI MEANING</th>
         <th onclick="sortTable('pronunciation')">🔽 PRONUNCIATION</th>
         <th onclick="sortTable('english')">🔽 ENGLISH MEANING</th>
-        <!--<th>AUDIO</th>-->
-        <!--<th>EXTERNAL AUDIO</th>-->
+        <!--<th data-label="AUDIO"><button onclick="speak(text)">🔊</button></th>-->
+        <!--<th data-label="EXTERNAL AUDIO"><a href="#" target="_blank">Play</a></th>-->
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -194,8 +199,13 @@
     <button onclick="nextPage()">Next</button>
   </div>
 
+  <div class="footer-bar">
+    <button class="toggle-mode" onclick="toggleDarkMode()">🌓<span>Mode</span></button>
+    <div id="summaryInfo"></div>
+  </div>
+
   <script>
-    let dictionaryData = [];
+    let data = [];
     let currentPage = 1;
     const itemsPerPage = 10;
     let currentSort = { column: '', ascending: true };
@@ -203,13 +213,13 @@
     fetch('data.json')
       .then(response => response.json())
       .then(jsonData => {
-        dictionaryData = jsonData;
+        data = jsonData;
         renderTable();
       });
 
     function renderTable() {
       const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      let filteredData = dictionaryData.filter(entry =>
+      let filteredData = data.filter(entry =>
         Object.values(entry).some(val => val.toLowerCase().includes(searchQuery))
       );
 
@@ -234,17 +244,16 @@
           <td data-label="HINDI MEANING">${entry.hindi}</td>
           <td data-label="PRONUNCIATION">${entry.pronunciation}</td>
           <td data-label="ENGLISH MEANING">${entry.english}</td>
-          <!--<td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>-->
-          <!--<td data-label="EXTERNAL AUDIO"><a href="${entry.audioUrl}" target="_blank">Play</a></td>-->
         </tr>`;
         tableBody.innerHTML += row;
       });
 
       document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${Math.ceil(filteredData.length / itemsPerPage)}`;
+      document.getElementById('summaryInfo').innerText = `Total Records: ${filteredData.length}`;
     }
 
     function nextPage() {
-      const totalPages = Math.ceil(dictionaryData.length / itemsPerPage);
+      const totalPages = Math.ceil(data.length / itemsPerPage);
       if (currentPage < totalPages) {
         currentPage++;
         renderTable();
