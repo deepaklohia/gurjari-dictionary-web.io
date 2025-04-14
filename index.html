@@ -32,6 +32,7 @@
       text-align: center;
       font-family: 'Roboto Slab', serif;
       font-size: 28px;
+      font-weight: normal;
       margin-bottom: 5px;
     }
     .description {
@@ -59,10 +60,10 @@
       margin-left: auto;
     }
     .search-container input {
-      padding: 4px;
-      height: 26px;
+      padding: 6px;
+      height: 28px;
       width: 300px;
-      font-size: 14px;
+      font-size: 15px;
       border: 2px solid var(--primary);
       border-radius: 4px;
       background-color: #f0f8ff;
@@ -72,8 +73,8 @@
       color: #fff;
     }
     .toggle-mode {
-      height: 30px;
-      padding: 4px 8px;
+      height: 28px;
+      padding: 6px 10px;
       font-size: 12px;
       background-color: var(--primary);
       color: white;
@@ -91,7 +92,7 @@
       margin: 10px 0;
     }
     .play-icon img {
-      height: 30px;
+      height: 40px;
     }
     .dictionary-table {
       width: 100%;
@@ -176,25 +177,18 @@
   <table class="dictionary-table">
     <thead>
       <tr>
-        <th onclick="sortTable('gurjari')">GURJARI WORD</th>
-        <th onclick="sortTable('hindi')">HINDI MEANING</th>
-        <th onclick="sortTable('pronunciation')">PRONUNCIATION</th>
-        <th onclick="sortTable('english')">ENGLISH MEANING</th>
-        <th>AUDIO</th>
+        <th onclick="sortTable('gurjari')">🔽 GURJARI WORD</th>
+        <th onclick="sortTable('hindi')">🔽 HINDI MEANING</th>
+        <th onclick="sortTable('pronunciation')">🔽 PRONUNCIATION</th>
+        <th onclick="sortTable('english')">🔽 ENGLISH MEANING</th>
+        <!--<th>AUDIO</th>-->
+        <!--<th>EXTERNAL AUDIO</th>-->
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
 
   <div class="pagination">
-    <label for="itemsPerPage">Items per page:</label>
-    <select id="itemsPerPage" onchange="changeItemsPerPage()">
-      <option value="5">5</option>
-      <option value="10" selected>10</option>
-      <option value="20">20</option>
-      <option value="50">50</option>
-    </select>
-    <br />
     <button onclick="prevPage()">Previous</button>
     <span id="pageInfo"></span>
     <button onclick="nextPage()">Next</button>
@@ -203,7 +197,7 @@
   <script>
     let data = [];
     let currentPage = 1;
-    let itemsPerPage = 10;
+    const itemsPerPage = 10;
     let currentSort = { column: '', ascending: true };
 
     fetch('data.json')
@@ -240,7 +234,8 @@
           <td data-label="HINDI MEANING">${entry.hindi}</td>
           <td data-label="PRONUNCIATION">${entry.pronunciation}</td>
           <td data-label="ENGLISH MEANING">${entry.english}</td>
-          <td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>
+          <!--<td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>-->
+          <!--<td data-label="EXTERNAL AUDIO"><a href="${entry.audioUrl}" target="_blank">Play</a></td>-->
         </tr>`;
         tableBody.innerHTML += row;
       });
@@ -280,13 +275,6 @@
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-IN';
       speechSynthesis.speak(utterance);
-    }
-
-    function changeItemsPerPage() {
-      const select = document.getElementById('itemsPerPage');
-      itemsPerPage = parseInt(select.value);
-      currentPage = 1;
-      renderTable();
     }
   </script>
 </body>
