@@ -1,4 +1,10 @@
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GURJARI DICTIONARY</title>
+  <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
 
     :root {
@@ -146,3 +152,59 @@
       }
     }
   </style>
+</head>
+<body>
+  <h1>GURJARI DICTIONARY</h1>
+  <div class="description">aao gurjari seekain</div>
+
+  <div class="top-bar">
+    <div class="left-controls">
+      <div class="play-icon">
+        <a href="https://play.google.com/store" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
+        </a>
+      </div>
+    </div>
+    <div class="right-controls">
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="renderTable()">
+      </div>
+      <button class="toggle-mode" onclick="toggleDarkMode()">🌓<span>Mode</span></button>
+    </div>
+  </div>
+
+  <table class="dictionary-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable('gurjari')">GURJARI WORD</th>
+        <th onclick="sortTable('hindi')">HINDI MEANING</th>
+        <th onclick="sortTable('pronunciation')">PRONUNCIATION</th>
+        <th onclick="sortTable('english')">ENGLISH MEANING</th>
+        <th>AUDIO</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="pagination">
+    <button onclick="prevPage()">Previous</button>
+    <span id="pageInfo"></span>
+    <button onclick="nextPage()">Next</button>
+  </div>
+
+  <script>
+    let data = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let currentSort = { column: '', ascending: true };
+
+    fetch('data.json')
+      .then(response => response.json())
+      .then(jsonData => {
+        data = jsonData;
+        renderTable();
+      });
+
+    function renderTable() {
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+      let fi
