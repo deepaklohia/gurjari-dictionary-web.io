@@ -31,7 +31,7 @@
     h1 {
       text-align: center;
       font-family: 'Roboto Slab', serif;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: normal;
       margin-bottom: 5px;
     }
@@ -60,10 +60,10 @@
       margin-left: auto;
     }
     .search-container input {
-      padding: 6px;
-      height: 28px;
+      padding: 4px;
+      height: 24px;
       width: 300px;
-      font-size: 15px;
+      font-size: 14px;
       border: 2px solid var(--primary);
       border-radius: 4px;
       background-color: #f0f8ff;
@@ -73,8 +73,8 @@
       color: #fff;
     }
     .toggle-mode {
-      height: 28px;
-      padding: 6px 10px;
+      height: 24px;
+      padding: 2px 6px;
       font-size: 12px;
       background-color: var(--primary);
       color: white;
@@ -92,7 +92,7 @@
       margin: 10px 0;
     }
     .play-icon img {
-      height: 40px;
+      height: 30px;
     }
     .dictionary-table {
       width: 100%;
@@ -105,7 +105,7 @@
       cursor: pointer;
     }
     .dictionary-table th {
-      background-color: var(--primary);
+      background-color: #888;
       color: white;
     }
     .dictionary-table tr:nth-child(even) {
@@ -195,7 +195,7 @@
   </div>
 
   <script>
-    let data = [];
+    let dictionaryData = [];
     let currentPage = 1;
     const itemsPerPage = 10;
     let currentSort = { column: '', ascending: true };
@@ -203,13 +203,13 @@
     fetch('data.json')
       .then(response => response.json())
       .then(jsonData => {
-        data = jsonData;
+        dictionaryData = jsonData;
         renderTable();
       });
 
     function renderTable() {
       const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      let filteredData = data.filter(entry =>
+      let filteredData = dictionaryData.filter(entry =>
         Object.values(entry).some(val => val.toLowerCase().includes(searchQuery))
       );
 
@@ -244,7 +244,7 @@
     }
 
     function nextPage() {
-      const totalPages = Math.ceil(data.length / itemsPerPage);
+      const totalPages = Math.ceil(dictionaryData.length / itemsPerPage);
       if (currentPage < totalPages) {
         currentPage++;
         renderTable();
