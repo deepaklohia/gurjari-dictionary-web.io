@@ -59,10 +59,10 @@
       margin-left: auto;
     }
     .search-container input {
-      padding: 6px;
-      height: 30px;
+      padding: 4px;
+      height: 26px;
       width: 300px;
-      font-size: 15px;
+      font-size: 14px;
       border: 2px solid var(--primary);
       border-radius: 4px;
       background-color: #f0f8ff;
@@ -73,7 +73,7 @@
     }
     .toggle-mode {
       height: 30px;
-      padding: 6px 10px;
+      padding: 4px 8px;
       font-size: 12px;
       background-color: var(--primary);
       color: white;
@@ -91,7 +91,7 @@
       margin: 10px 0;
     }
     .play-icon img {
-      height: 40px;
+      height: 30px;
     }
     .dictionary-table {
       width: 100%;
@@ -187,6 +187,14 @@
   </table>
 
   <div class="pagination">
+    <label for="itemsPerPage">Items per page:</label>
+    <select id="itemsPerPage" onchange="changeItemsPerPage()">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+    <br />
     <button onclick="prevPage()">Previous</button>
     <span id="pageInfo"></span>
     <button onclick="nextPage()">Next</button>
@@ -195,7 +203,7 @@
   <script>
     let data = [];
     let currentPage = 1;
-    const itemsPerPage = 10;
+    let itemsPerPage = 10;
     let currentSort = { column: '', ascending: true };
 
     fetch('data.json')
@@ -207,4 +215,79 @@
 
     function renderTable() {
       const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      let fi
+      let filteredData = data.filter(entry =>
+        Object.values(entry).some(val => val.toLowerCase().includes(searchQuery))
+      );
+
+      if (currentSort.column) {
+        filteredData.sort((a, b) => {
+          const valA = a[currentSort.column].toLowerCase();
+          const valB = b[currentSort.column].toLowerCase();
+          if (valA < valB) return currentSort.ascending ? -1 : 1;
+          if (valA > valB) return currentSort.ascending ? 1 : -1;
+          return 0;
+        });
+      }
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+      paginatedData.forEach(entry => {
+        const row = `<tr>
+          <td data-label="GURJARI WORD">${entry.gurjari}</td>
+          <td data-label="HINDI MEANING">${entry.hindi}</td>
+          <td data-label="PRONUNCIATION">${entry.pronunciation}</td>
+          <td data-label="ENGLISH MEANING">${entry.english}</td>
+          <td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+
+      document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${Math.ceil(filteredData.length / itemsPerPage)}`;
+    }
+
+    function nextPage() {
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderTable();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+      }
+    }
+
+    function sortTable(column) {
+      if (currentSort.column === column) {
+        currentSort.ascending = !currentSort.ascending;
+      } else {
+        currentSort = { column: column, ascending: true };
+      }
+      renderTable();
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-IN';
+      speechSynthesis.speak(utterance);
+    }
+
+    function changeItemsPerPage() {
+      const select = document.getElementById('itemsPerPage');
+      itemsPerPage = parseInt(select.value);
+      currentPage = 1;
+      renderTable();
+    }
+  </script>
+</body>
+</html>
