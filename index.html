@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GURJARI DICTIONARY</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
+
     :root {
       --bg-color: #f9f9f9;
       --text-color: #000;
       --alt-row-color: #e0e0e0;
-      --primary: #444;
-      --hover: #222;
+      --primary: #666;
+      --hover: #444;
     }
 
     body.dark-mode {
@@ -28,6 +30,15 @@
     }
     h1 {
       text-align: center;
+      font-family: 'Roboto Slab', serif;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    .description {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+      font-style: italic;
     }
     .top-bar {
       display: flex;
@@ -36,8 +47,20 @@
       flex-wrap: wrap;
       margin-bottom: 10px;
     }
+    .left-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
     .search-container input {
       padding: 8px;
+      height: 36px;
       width: 300px;
       font-size: 16px;
       border: 2px solid var(--primary);
@@ -49,17 +72,26 @@
       color: #fff;
     }
     .toggle-mode {
-      padding: 8px 14px;
-      font-size: 14px;
+      height: 36px;
+      padding: 6px 10px;
+      font-size: 12px;
       background-color: var(--primary);
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .toggle-mode span {
+      margin-left: 5px;
     }
     .play-icon {
-      text-align: center;
-      margin: 20px 0;
+      text-align: left;
+      margin: 10px 0;
+    }
+    .play-icon img {
+      height: 40px;
     }
     .dictionary-table {
       width: 100%;
@@ -123,16 +155,22 @@
 </head>
 <body>
   <h1>GURJARI DICTIONARY</h1>
+  <div class="description">aao gurjari seekain</div>
 
   <div class="top-bar">
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search..." onkeyup="renderTable()">
+    <div class="left-controls">
+      <div class="play-icon">
+        <a href="https://play.google.com/store" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
+        </a>
+      </div>
     </div>
-    <button class="toggle-mode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-  </div>
-
-  <div class="play-icon">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="60">
+    <div class="right-controls">
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="renderTable()">
+      </div>
+      <button class="toggle-mode" onclick="toggleDarkMode()">🌓<span>Mode</span></button>
+    </div>
   </div>
 
   <table class="dictionary-table">
@@ -141,8 +179,8 @@
         <th onclick="sortTable('gurjari')">GURJARI WORD</th>
         <th onclick="sortTable('hindi')">HINDI MEANING</th>
         <th onclick="sortTable('pronunciation')">PRONUNCIATION</th>
-        <th>AUDIO</th>
         <th onclick="sortTable('english')">ENGLISH MEANING</th>
+        <th>AUDIO</th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -193,8 +231,8 @@
           <td data-label="GURJARI WORD">${entry.gurjari}</td>
           <td data-label="HINDI MEANING">${entry.hindi}</td>
           <td data-label="PRONUNCIATION">${entry.pronunciation}</td>
-          <td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>
           <td data-label="ENGLISH MEANING">${entry.english}</td>
+          <td data-label="AUDIO"><button onclick="speak('${entry.pronunciation}')">🔊</button></td>
         </tr>`;
         tableBody.innerHTML += row;
       });
